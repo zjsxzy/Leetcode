@@ -85,19 +85,25 @@ struct SegTree {
 class Solution {
 public:
 	int jump(int A[], int n) {
-		tree.build(0, n - 1, 1);	
+		//tree.build(0, n - 1, 1);	
+		int dp[n];
+		dp[0] = 0;
 		int limit = 0;
 		for (int i = 0; i < n - 1; i++) {
 			if (i + A[i] > limit) {
-				int cur = tree.query(i, i, 0, n - 1, 1);
+				//int cur = tree.query(i, i, 0, n - 1, 1);
+				int cur = dp[i];
 				if (i + A[i] >= n - 1) {
 					return cur + 1;
 				}
-				tree.update(limit + 1, min(n - 1, i + A[i]), cur + 1, 0, n - 1, 1);
+				//tree.update(limit + 1, min(n - 1, i + A[i]), cur + 1, 0, n - 1, 1);
+				for (int j = limit + 1; j <= min(n - 1, i + A[i]); j++)
+					dp[j] = cur + 1;
 				limit = i + A[i];
 			}
 		}
-		return tree.query(n - 1, n - 1, 0, n - 1, 1);
+		//return tree.query(n - 1, n - 1, 0, n - 1, 1);
+		return dp[n - 1];
 	}
 };
 
