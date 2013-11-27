@@ -22,6 +22,18 @@ using namespace std;
 #define FOREACH(e,x) for(__typeof(x.begin()) e=x.begin();e!=x.end();++e)
 typedef long long LL;
 
+/*
+ * Description: 
+ * Given an array of non-negative integers, you are initially positioned at the first index of the array.
+ * Each element in the array represents your maximum jump length at that position.
+ * Your goal is to reach the last index in the minimum number of jumps.
+ *
+ * Solution:
+ * Obviously, it should be solved by dynamic programming and we can write the fomula: F(i + k) = min{F(i) + 1 | 1 <= k <= A[i]}
+ * We can also find that the maximum step that we can reach is monotonously increasing. 
+ * So we can optimize this algorithm using segment tree.
+ *
+ */
 const int MAXN = 50005;
 struct SegTree {
 
