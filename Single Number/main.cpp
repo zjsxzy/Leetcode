@@ -21,11 +21,17 @@ using namespace std;
 #define FOREACH(e,x) for(__typeof(x.begin()) e=x.begin();e!=x.end();++e)
 typedef long long LL;
 
+/*
+ * Description:
+ * Given an array of integers, every element appears twice except for one. Find that single one.
+ *
+ * Solution:
+ * We know that x^0 = x, x^x = 0, so the answer is xor of all the numbers.
+ *
+ */
 class Solution {
 public:
     int singleNumber(int A[], int n) {
-        // IMPORTANT: Please reset any member data you declared, as
-        // the same Solution instance will be reused for each test case.
 		int ret = 0;
 		for (int i = 0; i < n; i++)
 			ret ^= A[i];
