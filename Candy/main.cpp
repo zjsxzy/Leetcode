@@ -31,7 +31,8 @@ typedef long long LL;
  * What is the minimum candies you must give?
  *
  * Solution:
- * DP. f(i) = max(f(i-1)+1 | r[i] > r[i-1], f(i+1)+1 | r[i] > r[i+1])
+ * Sort by ratings first.
+ * Then DP. f(i) = max(f(i-1)+1 | r[i] > r[i-1], f(i+1)+1 | r[i] > r[i+1])
  */
 class Solution {
 public:
@@ -39,15 +40,20 @@ public:
 		int ret = 0, n = ratings.size();
 		if (n == 0) return 0;
 		vector<int> dp(n);
-		for (int i = 0; i < n; i++)
+		vector<pair<int, int> > idx(n);
+		for (int i = 0; i < n; i++) {
+			idx[i] = make_pair(ratings[i], i);
 			dp[i] = 1;
-		for (int i = 1; i < n; i++) {
-			if (ratings[i] > ratings[i - 1])
-				dp[i] = max(dp[i], dp[i - 1] + 1);
 		}
-		for (int i = n - 2; i >= 0; i--) {
-			if (ratings[i] > ratings[i + 1])
-				dp[i] = max(dp[i], dp[i + 1] + 1);
+		sort(idx.begin(), idx.end());
+		for (int i = 0; i < n; i++) {
+			int p = idx[i].second;
+			if (p - 1 >= 0 && ratings[p - 1] < ratings[p]) {
+				dp[p] = max(dp[p], dp[p - 1] + 1);
+			}
+			if (p + 1 < n && ratings[p + 1] < ratings[p]) {
+				dp[p] = max(dp[p], dp[p + 1] + 1);
+			}
 		}
 		for (int i = 0; i < n; i++)
 			ret += dp[i];
@@ -55,10 +61,13 @@ public:
     }
 };
 int main() {
-	int myint[] = {1, 2, 2};
+	int myint[] = {1, 3, 5};
 	vector<int> r(myint, myint + 3);
 	Solution sol;
+	int myint2[] = {2, 2};
+	vector<int> r2(myint2, myint2 + 2);
 	cout << sol.candy(r) << endl;
+	cout << sol.candy(r2) << endl;
 	return 0;
 }
 
