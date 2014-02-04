@@ -27,7 +27,7 @@ typedef long long LL;
  * Given a linked list, determine if it has a cycle in it.
  *
  * Solution:
- * Two points, one moves by one step, the other moves by two steps.
+ * Two pointers, one moves by one step, the other moves by two steps.
  */
 struct ListNode {
     int val;
