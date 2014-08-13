@@ -27,7 +27,7 @@ typedef long long LL;
 /*
  * Description: Given a string s and a dictionary of words dict, determine if s can be segmented into a space-separated sequence of one or more dictionary words.
  *
- * Solution: Trie tree + dp
+ * Solution: Trie tree + dp.
  *
  */
 const int MAXN = 1000;
