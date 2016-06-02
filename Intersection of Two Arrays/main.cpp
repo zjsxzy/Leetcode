@@ -26,14 +26,18 @@ typedef long long LL;
 class Solution {
 public:
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-		set<int> st1(nums1.begin(), num2.end());
-		set<int> st2(num2.begin(), )
-		vector<int> res;
-		for (int i = 0; i < nums2.size(); i++) {
-			if (st.find(nums2[i]) != st.end()) {
-				res.push_back(nums[i]);
-			}
-		}
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+        nums1.resize(unique(nums1.begin(), nums1.end()) - nums1.begin());
+        nums2.resize(unique(nums2.begin(), nums2.end()) - nums2.begin());
+        set<int> st(nums1.begin(), nums1.end());
+        vector<int> res;
+        for (int i = 0; i < nums2.size(); i++) {
+            if (st.find(nums2[i]) != st.end()) {
+                res.push_back(nums2[i]);
+            }
+        }
+        return res;
     }
 };
 int main() {
