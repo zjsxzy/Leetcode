@@ -15,4 +15,4 @@ class Solution:
 
 if __name__ == "__main__":
     sol = Solution()
-    print sol.reverseWords(" ")
+    print sol.reverseWords("the sky is blue")
