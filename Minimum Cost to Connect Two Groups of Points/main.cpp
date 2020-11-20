@@ -23,108 +23,53 @@ using namespace std;
 #define FOREACH(e,x) for(__typeof(x.begin()) e=x.begin();e!=x.end();++e)
 typedef long long LL;
 
-#define maxV 105
-#define maxE 100 * maxV
-const int inf = 0x3f3f3f3f;
-struct Nod {
-    int b, nxt;
-    int cap, cst;
-    void init(int b, int nxt, int cap,int cst) {
-        this->b = b;
-        this->nxt = nxt;
-        this->cap = cap;
-        this->cst = cst;
-    }
-};
-struct MinCost {
-    int E[maxV];        int n;
-    Nod buf[maxE*2];    int len;
 
-    int p[maxV];
-    void init(int n) {
-        this->n = n;
-        memset(E, 255, sizeof(E));
-        len = 0;
-    }
-    void addCap(int a, int b, int cap, int cst) {
-        buf[len].init(b, E[a], cap, cst);   E[a] = len ++;
-        buf[len].init(a, E[b], 0,  -cst);   E[b] = len ++;
-    }
-    bool spfa(int source, int sink) {
-        static queue<int> q;
-        static int d[maxV];
-        memset(d,  63, sizeof(d));
-        memset(p, 255, sizeof(p));
-
-        d[source] = 0;
-        q.push(source);
-        int u, v;
-        while(!q.empty()) {
-            u = q.front();
-            q.pop();
-            for(int i = E[u]; i != -1; i = buf[i].nxt) {
-                v = buf[i].b;
-                if(buf[i].cap>0 && d[u]+buf[i].cst<d[v]) {
-                    d[v] = d[u]+buf[i].cst;
-                    p[v] = i;
-                    q.push(v);
-                }
-            }
-        }
-        return d[sink] != inf;
-    }
-    pair<int, int> solve(int source, int sink) {
-        int minCost = 0,maxFlow = 0;
-        while(spfa(source, sink)) {
-            int neck = inf;
-            for(int t=p[sink]; t != -1; t = p[ buf[t^1].b ])
-                neck = min(neck, buf[t].cap);
-            maxFlow += neck;
-            for(int t = p[sink]; t != -1; t = p[ buf[t^1].b ]) {
-                buf[t].cap -= neck;
-                buf[t^1].cap += neck;
-                minCost += buf[t].cst * neck;
-            }
-        }
-        return MP(maxFlow, minCost);
-    }
-} mcmf;
-
+const int inf = 1000000;
+int cs[12][5000], dp[12][5000];
 class Solution {
 public:
     int connectTwoGroups(vector<vector<int>>& cost) {
         int n = cost.size(), m = cost[0].size();
-        int s = n + m, t = n + m + 1;
-        vector<int> lmin(n, INT_MAX), rmin(m, INT_MAX);
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                lmin[i] = min(lmin[i], cost[i][j]);
-                rmin[j] = min(rmin[j], cost[i][j]);
+            for (int j = 0; j < (1 << m); j++) {
+                cs[i][j] = 0;
             }
         }
-        int ans = 0;
         for (int i = 0; i < n; i++) {
-            ans += lmin[i];
-        }
-        for (int j = 0; j < m; j++) {
-            ans += rmin[j];
-        }
-        mcmf.init(n + m + 2);
-        for (int i = 0; i < n; i++) {
-            mcmf.addCap(s, i, 1, 0);
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (cost[i][j] - lmin[i] - rmin[j] < 0) {
-                    mcmf.addCap(i, n + j, 1, cost[i][j] - lmin[i] - rmin[j]);
+            for (int j = 0; j < (1 << m); j++) {
+                for (int k = 0; k < m; k++) {
+                    if (j & (1 << k)) {
+                        cs[i][j] += cost[i][k];
+                    }
                 }
             }
         }
-        for (int j = 0; j < m; j++) {
-            mcmf.addCap(n + j, t, 1, 0);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < (1 << m); j++) {
+                if (i == 0) dp[i][j] = cs[i][j];
+                else dp[i][j] = inf;
+            }
         }
-        pair<int, int> res = mcmf.solve(s, t);
-        return ans + res.second;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < (1 << m); j++) {
+                // at least choose one
+                for (int k = 0; k < m; k++) {
+                    dp[i][j | (1 << k)] = min(dp[i][j | (1 << k)], dp[i - 1][j] + cost[i][k]);
+                }
+                int rest = (1 << m) - 1 - j;
+                for (int k = rest; k >= 0; k = rest & (k - 1)) {
+                    dp[i][j | k] = min(dp[i][j | k], dp[i - 1][j] + cs[i][k]);
+                }
+                /*
+                for (int k = 1; k < (1 << m); k++) {
+                    dp[i][j | k] = min(dp[i][j | k], dp[i - 1][k] + cs[i][j]);
+                }
+                */
+            }
+        }
+        return dp[n - 1][(1 << m) - 1];
     }
 };
 
