@@ -99,21 +99,17 @@ public:
             out[e[0]]++;
             in[e[1]]++;
         }
-        vector<int> diff(n);
-        for (int i = 0; i < n; i++) {
-            diff[i] = out[i] - in[i];
-        }
         int s = n, t = n + 1;
         mcmf.init(n + 2);
         for (int i = 0; i < n; i++) {
-            if (diff[i] > 0) {
-                mcmf.addCap(s, i, diff[i], 0);
-            } else if (diff[i] < 0) {
-                mcmf.addCap(i, t, -diff[i], 0);
+            if (out[i] > in[i]) {
+                mcmf.addCap(s, i, out[i] - in[i], 0);
+            } else if (in[i] > out[i]) {
+                mcmf.addCap(i, t, in[i] - out[i], 0);
             }
         }
         for (auto e : requests) {
-            mcmf.addCap(e[0], e[0], 1, 1);
+            mcmf.addCap(e[0], e[1], 1, 1);
         }
         auto res = mcmf.solve(s, t);
         return m - res.second;
