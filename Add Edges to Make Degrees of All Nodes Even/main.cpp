@@ -24,7 +24,6 @@ public:
             for (int i = 0; i < n; i++) {
                 if (i == v[0] || i == v[1]) continue;
                 if (!adj[v[0]].count(i) && !adj[v[1]].count(i)) return true;
-                return false;
             }
             return false;
         }
