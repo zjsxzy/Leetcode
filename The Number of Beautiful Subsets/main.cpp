@@ -24,6 +24,7 @@ public:
         diff = k;
         n = nums.size();
         for (int i = 0; i < n; i++) a[i] = nums[i];
+        sort(a, a + n);
         for (int i = 0; i < 1005; i++) vst[i] = 0;
         int res = dfs(0, 0);
         return res - 1;
