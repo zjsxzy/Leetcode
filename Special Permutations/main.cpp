@@ -2,7 +2,7 @@
 using namespace std;
 typedef long long LL;
 
-int dp[15][1 << 15][15];
+int dp[1 << 15][15];
 class Solution {
 public:
     int specialPerm(vector<int>& nums) {
@@ -10,17 +10,15 @@ public:
         const int mod = 1e9 + 7;
         memset(dp, 0, sizeof(dp));
         for (int i = 0; i < n; i++) {
-            dp[1][1 << i][i] = 1;
+            dp[1 << i][i] = 1;
         }
-        for (int i = 1; i < n; i++) {
-            for (int s = 1; s < (1 << n); s++) {
-                for (int j = 0; j < n; j++) {
-                    if (s >> j & 1 && dp[i][s][j]) {
-                        for (int k = 0; k < n; k++) {
-                            if (!(s >> k & 1) && (nums[j] % nums[k] == 0 || nums[k] % nums[j] == 0)) {
-                                dp[i + 1][s | (1 << k)][k] += dp[i][s][j];
-                                dp[i + 1][s | (1 << k)][k] %= mod;
-                            }
+        for (int s = 1; s < (1 << n); s++) {
+            for (int j = 0; j < n; j++) {
+                if (s >> j & 1 && dp[s][j]) {
+                    for (int k = 0; k < n; k++) {
+                        if (!(s >> k & 1) && (nums[j] % nums[k] == 0 || nums[k] % nums[j] == 0)) {
+                            dp[s | (1 << k)][k] += dp[s][j];
+                            dp[s | (1 << k)][k] %= mod;
                         }
                     }
                 }
@@ -28,7 +26,7 @@ public:
         }
         int res = 0;
         for (int i = 0; i < n; i++) {
-            res += dp[n][(1 << n) - 1][i];
+            res += dp[(1 << n) - 1][i];
             res %= mod;
         }
         return res;
